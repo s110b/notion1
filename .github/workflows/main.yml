@@ -48,13 +48,7 @@ jobs:
           echo "Printing contents of Markdown files:"
           find . -name '*.md' -exec cat {} +
       
-      - name: test
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Commit changes
-          branch: feature-test
-          push_options: '--force'
-          create_branch: true
+
           
       - name: Checkout vip repository
         uses: actions/checkout@v2
@@ -64,11 +58,12 @@ jobs:
           path: app
           ssh-key: ${{ secrets.MY_SSH_PRIVATE_KEY }}
   
-      - name: Checkout current repository (feature-test)
-        uses: actions/checkout@v2
-        with:
-          ref: feature-test
-          path: content
+      - name: Print Directory Structure and Markdown Files
+        run: |
+          echo "Printing directory structure:"
+          tree
+          echo "Printing contents of Markdown files:"
+       
   
       - name: Copy content to app/content/post/notion1 and show directory structure before
         run: |
