@@ -1,0 +1,45 @@
+name: NotionJAM
+
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 1-17/1 * * *'
+
+jobs:
+  notion2markdown:
+    runs-on: ubuntu-latest
+    name: Convert Notion to Markdown
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Convert Notion to Markdown
+        id: notion2markdown
+        uses: s110b/notion-jam-md@main
+        with:
+          NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
+          NOTION_DATABASE: https://www.notion.so/a2a70d82655a42b382921fb3d644acb0
+          FILTER_PROP: Status
+          FILTER_VALUES: Published
+          CONVERT_PROP_CASE: snake
+          ARTICLE_PATH: content/posts/{title}/README.md
+          ASSETS_PATH: ./
+          PARALLEL_PAGES: 25
+          PARALLEL_DOWNLOADS_PER_PAGE: 3
+          DOWNLOAD_IMAGE_TIMEOUT: 30
+          SKIP_DOWNLOADED_IMAGES: true
+          DOWNLOAD_FRONTMATTER_IMAGES: true
+
+
+  
+
+      - name: Install Tree Command
+        run: sudo apt-get install tree -y
+
+      - name: Print Directory Structure and Markdown Files
+        run: |
+          echo "Printing directory structure:"
+          tree
+          echo "Printing contents of Markdown files:"
+          find . -name '*.md' -exec cat {} +
