@@ -72,7 +72,7 @@ jobs:
           rm -rf app/content/post/*
           mkdir -p app/content/post/notion1
          
-          cp -r content/content/posts/* app/content/post/notion1/
+          cp -r content/posts/* app/content/post/notion1/
           echo "Directory structure after changes:"
           tree app/
   
