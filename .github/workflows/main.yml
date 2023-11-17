@@ -43,3 +43,86 @@ jobs:
           tree
           echo "Printing contents of Markdown files:"
           find . -name '*.md' -exec cat {} +
+      
+      - name: test
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Commit changes
+          branch: feature-test
+          push_options: '--force'
+          create_branch: true
+          
+      - name: Checkout vip repository
+        uses: actions/checkout@v2
+        with:
+          repository: s110b/vip
+          ref: master
+          path: app
+          ssh-key: ${{ secrets.MY_SSH_PRIVATE_KEY }}
+  
+      - name: Checkout current repository (feature-test)
+        uses: actions/checkout@v2
+        with:
+          ref: feature-test
+          path: content
+  
+      - name: Copy content to app/content/post/notion1 and show directory structure before
+        run: |
+          echo "Directory structure before changes:"
+          tree app/ || sudo apt-get install tree && tree app/
+          rm -rf app/content/post/*
+          mkdir -p app/content/post/notion1
+         
+          cp -r content/content/posts/* app/content/post/notion1/
+          echo "Directory structure after changes:"
+          tree app/
+  
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+            repository-name: "s110b/notion1"
+            branch: ibm
+            folder: app
+            clean: true
+            single-commit: true
+            force: true
+            ssh-key: ${{ secrets.MY_SSH_PRIVATE_KEY }}
+
+      
+      - name: checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ibm
+
+      - name: Cache Hugo resources
+        uses: actions/cache@v3
+        env:
+            cache-name: cache-hugo-resources
+        with:
+            path: resources
+            key: ${{ env.cache-name }}
+
+      - uses: actions/setup-go@v4
+        with:
+            go-version: "^1.17.0"
+      - run: go version
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+            hugo-version: "latest"
+            extended: true
+
+      - name: Build
+        run: hugo --minify --gc --baseURL "/notion1/"
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+            repository-name: "s110b/notion1"
+            branch: notion1
+            folder: public
+            clean: true
+            single-commit: true
+            force: true
+            ssh-key: ${{ secrets.MY_SSH_PRIVATE_KEY }}  # Use the new token
