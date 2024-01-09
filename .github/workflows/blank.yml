@@ -1,0 +1,127 @@
+name: MyNotionMD
+
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  notion2markdown:
+    runs-on: ubuntu-latest
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+    name: Convert Notion to Markdown
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Convert Notion to Markdown
+        id: notion2markdown
+        uses: s110b/notion-jam-md@main
+        with:
+          NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
+          NOTION_DATABASE: https://www.notion.so/a2a70d82655a42b382921fb3d644acb0
+          FILTER_PROP: Status
+          FILTER_VALUES: Published
+          CONVERT_PROP_CASE: snake
+          ARTICLE_PATH: content/posts/{name}/index.md
+          ASSETS_PATH: ./
+          PARALLEL_PAGES: 25
+          PARALLEL_DOWNLOADS_PER_PAGE: 3
+          DOWNLOAD_IMAGE_TIMEOUT: 30
+          SKIP_DOWNLOADED_IMAGES: true
+          DOWNLOAD_FRONTMATTER_IMAGES: true
+
+
+  
+
+      - name: Install Tree Command
+        run: sudo apt-get install tree -y
+
+      - name: Print Directory Structure and Markdown Files
+        run: |
+          echo "Printing directory structure:"
+          tree
+          echo "Printing contents of Markdown files:"
+          find . -name '*.md' -exec cat {} +
+      
+
+          
+      - name: Checkout vip repository
+        uses: actions/checkout@v2
+        with:
+          repository: s110b/vip
+          ref: master
+          path: app
+          ssh-key: ${{ secrets.MY_SSH_PRIVATE_KEY }}
+  
+      - name: Print Directory Structure and Markdown Files
+        run: |
+          echo "Printing directory structure:"
+          tree
+          echo "Printing contents of Markdown files:"
+       
+  
+      - name: Copy content to app/content/post/notion1 and show directory structure before
+        run: |
+          echo "Directory structure before changes:"
+          tree app/ || sudo apt-get install tree && tree app/
+          rm -rf app/content/post/*
+          mkdir -p app/content/post/notion1
+         
+          cp -r content/posts/* app/content/post/notion1/
+          echo "Directory structure after changes:"
+          tree app/
+  
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+            repository-name: "s110b/notion1"
+            branch: ibm
+            folder: app
+            clean: true
+            single-commit: true
+            force: true
+            ssh-key: ${{ secrets.MY_SSH_PRIVATE_KEY }}
+
+      
+      - name: checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ibm
+
+      - name: Cache Hugo resources
+        uses: actions/cache@v3
+        env:
+            cache-name: cache-hugo-resources
+        with:
+            path: resources
+            key: ${{ env.cache-name }}
+
+      - uses: actions/setup-go@v4
+        with:
+            go-version: "^1.17.0"
+      - run: go version
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+            hugo-version: "latest"
+            extended: true
+
+      - name: Build
+        run: hugo --minify --gc --baseURL ""
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+            repository-name: "s110b/notion1"
+            branch: vercel
+            folder: public
+            clean: true
+            single-commit: true
+            force: true
+            ssh-key: ${{ secrets.MY_SSH_PRIVATE_KEY }}  # Use the new token
