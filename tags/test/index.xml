@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Test on fengaili</title><link>/tags/test/</link><description>Recent content in Test on fengaili</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 22 Nov 2023 09:42:00 +0000</lastBuildDate><atom:link href="/tags/test/index.xml" rel="self" type="application/rss+xml"/><item><title>修改了一个github action</title><link>/p/%E4%BF%AE%E6%94%B9%E4%BA%86%E4%B8%80%E4%B8%AAgithub-action/</link><pubDate>Wed, 22 Nov 2023 09:42:00 +0000</pubDate><guid>/p/%E4%BF%AE%E6%94%B9%E4%BA%86%E4%B8%80%E4%B8%AAgithub-action/</guid><description>&lt;img src="/p/%E4%BF%AE%E6%94%B9%E4%BA%86%E4%B8%80%E4%B8%AAgithub-action/solid_blue_zjc32N3a.png" alt="Featured image of post 修改了一个github action" />&lt;h2 id="修改了一个github-action">修改了一个github action&lt;/h2>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://github.com/s110b/notion-jam-md" target="_blank" rel="noopener"
+>&lt;img src="/p/%E4%BF%AE%E6%94%B9%E4%BA%86%E4%B8%80%E4%B8%AAgithub-action/favicon_f8fO6Cee.svg"
+loading="lazy"
+alt="favicon"
+> &lt;strong>GitHub&lt;/strong>&lt;/a>&lt;/p>
+&lt;ul>
+&lt;li>同步notion为md文件， * 转换md文件适配hugo stack主题， * 下载notion图片到本地。 * 同时更新 md中的图片地址信息。 - s110b/notion-jam-md&lt;br>
+&lt;a class="link" href="https://github.com/s110b/notion-jam-md" target="_blank" rel="noopener"
+>https://github.com/s110b/notion-jam-md&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;p>修改了如下内容：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>meta信息中图片取值修改为image&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>md信息中图片取值去掉路径&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>删掉不必要的meta信息中的author&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>本次修改主要理解了github action的运行原理&lt;/p>
+&lt;p>将 Notion 页面同步至 GitHub，以创建静态网站（hugo）&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>将 Notion 页面转换成 Markdown 格式的文件。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>自动将notion database属性作为md meta信息。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>下载所有图片至本地，并更改其路径为相对路径。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>下载页面的封面图像。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>根据页面封面、第一张图片、图标或根据帖子设定的图片编号，自动在前言中添加缩略图属性。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="浪费时间的action">浪费时间的action&lt;/h2>
+&lt;p>如果不出错就都还好，出错有些问题就很难调试，报的错跟实际原因不相符。
+所有action运行的时候都要注意他的上下文和目录位置。尤其是多个check的时候，
+他是以第一次的check当作主目录的。
+为了防止出错，我们有必要每次打印日志。一定要清楚，acton在哪个上下文执行。&lt;/p>
+&lt;h3 id="当然尝试的步骤主要是一下几种">当然尝试的步骤主要是一下几种&lt;/h3>
+&lt;ol>
+&lt;li>ssh 是否设置正确&lt;/li>
+&lt;li>&lt;em>调整folder位置，这个是浪费时间。&lt;/em>&lt;/li>
+&lt;li>最重要还是第一次checkout的位置。&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Deploy&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">uses&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">JamesIves/github-pages-deploy-action@v4&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">with&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">branch&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">qq&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">folder&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">./app&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">clean&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">single-commit&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">force&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="kc">true&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">ssh-key&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">${{ secrets.MY_SSH_PRIVATE_KEY }} &lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="c"># Use the new token&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="图片处理流程">图片处理流程&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>利用magic读取图片信息，重命名图片。没有meta信息，从001递增。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>对图片用webp压缩。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>用jekyll编译为静态网页，上传到仓库的gh-pages 分支&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>在qq仓库，从图片处理仓库拉取gh-pages分支部署。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>浏览图片网站。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;a class="link" href="https://s110b.github.io/qq/" target="_blank" rel="noopener"
+>embed&lt;/a>&lt;/p></description></item><item><title>测试图片大小</title><link>/p/%E6%B5%8B%E8%AF%95%E5%9B%BE%E7%89%87%E5%A4%A7%E5%B0%8F/</link><pubDate>Sun, 19 Nov 2023 06:16:00 +0000</pubDate><guid>/p/%E6%B5%8B%E8%AF%95%E5%9B%BE%E7%89%87%E5%A4%A7%E5%B0%8F/</guid><description>&lt;img src="/p/%E6%B5%8B%E8%AF%95%E5%9B%BE%E7%89%87%E5%A4%A7%E5%B0%8F/solid_blue_zjc32N3a.png" alt="Featured image of post 测试图片大小" />&lt;p>/重要图片备份&lt;/p>
+&lt;p>&lt;img src="/p/%E6%B5%8B%E8%AF%95%E5%9B%BE%E7%89%87%E5%A4%A7%E5%B0%8F/IMG_8500_JsrmK1Sd.jpg"
+width="1061"
+height="1510"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="70"
+data-flex-basis="168px"
+>&lt;/p>
+&lt;p>&lt;img src="/p/%E6%B5%8B%E8%AF%95%E5%9B%BE%E7%89%87%E5%A4%A7%E5%B0%8F/Untitled_ovCYJcyb.jpeg"
+width="1280"
+height="1360"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="94"
+data-flex-basis="225px"
+>&lt;/p>
+&lt;p>&lt;img src="/p/%E6%B5%8B%E8%AF%95%E5%9B%BE%E7%89%87%E5%A4%A7%E5%B0%8F/IMG_8494_ymWK3koQ.jpg"
+width="1280"
+height="1492"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="85"
+data-flex-basis="205px"
+>&lt;/p>
+&lt;p>&lt;img src="/p/%E6%B5%8B%E8%AF%95%E5%9B%BE%E7%89%87%E5%A4%A7%E5%B0%8F/IMG_8514_Alcqkwup.jpg"
+width="1741"
+height="5309"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="32"
+data-flex-basis="78px"
+>&lt;/p></description></item></channel></rss>
